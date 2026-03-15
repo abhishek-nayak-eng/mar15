@@ -35,8 +35,8 @@ jobs:
     - name: Tag Image
       run: |
         docker tag flask-app:latest \
-        <ACCOUNT_ID>.dkr.ecr.ap-south-1.amazonaws.com/flask-app:latest
+         724121676037.dkr.ecr.ap-south-1.amazonaws.com/mar15
 
     - name: Push Image to ECR
       run: |
-        docker push <ACCOUNT_ID>.dkr.ecr.ap-south-1.amazonaws.com/flask-app:latest
+        docker push  724121676037.dkr.ecr.ap-south-1.amazonaws.com/mar15
