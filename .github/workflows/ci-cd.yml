@@ -1,0 +1,42 @@
+name: CI-CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+
+  build-and-deploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+        aws-region: ap-south-1
+
+    - name: Login to ECR
+      run: |
+        aws ecr get-login-password \
+        | docker login --username AWS --password-stdin \
+        <ACCOUNT_ID>.dkr.ecr.ap-south-1.amazonaws.com
+
+    - name: Build Docker Image
+      run: |
+        docker build -t flask-app .
+
+    - name: Tag Image
+      run: |
+        docker tag flask-app:latest \
+        <ACCOUNT_ID>.dkr.ecr.ap-south-1.amazonaws.com/flask-app:latest
+
+    - name: Push Image to ECR
+      run: |
+        docker push <ACCOUNT_ID>.dkr.ecr.ap-south-1.amazonaws.com/flask-app:latest
